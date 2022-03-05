@@ -1,26 +1,19 @@
-
 .button {
     height: 30px;
     width: 30px;
     outline: none;
     margin: 10px;
     text-align: center;
+    align-items: center;
     border: none;
     border-radius: 2px;
   }
-  
-  .button1 {
-    background-color: white;
-    color: black;
-    border: 2px solid Black
-  }
 
-  .button1:hover{
-    background-color: black;
-    color: white;
-  }
-  
   button.current {
     box-shadow: 0 0 0 2px white,
                 0 0 0 4px black;
+  }
+
+  popup body{
+    background-color: aqua;
   }
