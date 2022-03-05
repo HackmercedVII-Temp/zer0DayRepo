@@ -6,7 +6,7 @@
     
     "author": "Khalid , Jason, Javier, Michael",
     "action":{
-        "default_popup": "index.html",
+        "default_popup": "popup.html",
         "default_title": "Zer0Day AntiScam"
     },
 
