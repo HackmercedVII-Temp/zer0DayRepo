@@ -9,25 +9,32 @@
     font-size: 5px;
     border-radius: 5px;
     text-align: center;
+    background-color: #48C9B0;
+    color: black;
  }
 
 .button2 {
     background-color: #00FDFF;
     color: black;
     border: 2px solid #008CBA;
-
+    height: 30px;
+    width: 60px;
 }
 
 .button3 {
   background-color: #00FDFF;
   color: black;
   border: 2px solid #008CBA;
+  height: 30px;
+  width: 60px;
 }
 
 .button4 {
   background-color: #00FDFF;
   color: black;
   border: 2px solid #008CBA;
+  height: 30px;
+  width: 60px;
 }
 
 h2 {
@@ -38,16 +45,39 @@ h2 {
 }
 
 h4 {
-  padding: 60px;
+  padding: 0%;
   text-align: center;
   color: white;
-  font-size: 1000 px;
+  font-size: 100 px;
 }
 
 body {
   background: #1abc9c;
 }
 
+.phishing{
+  display: flex;
+  justify-content: center;
+  padding-top: 50px;
+  position:absolute;
+  top: 13%;
+  right: 40%;
+}
 
+.center {
+  margin: 0%;
+  position: absolute;
+  bottom : 0%;
+  left: 50%;
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+}
+
+h3 {
+  text-align: center;
+  padding: 80px;
+  color: white;
+  font-size: 1000 px;
+}
   
   
