@@ -1,0 +1,108 @@
+
+.button1 {
+    height: 20px;
+    width: 50px;
+    display:list-item;
+    justify-content: center;
+    border-color: black;
+    border-style:solid;
+    font-size: 5px;
+    border-radius: 5px;
+    text-align: center;
+    background-color: #4175FC;
+    color: black;
+    cursor: pointer;
+ }
+
+ .button1:hover {
+  background: #C1CFDA;
+  color: black;
+}
+
+.button2 {
+  background-color: #4175FC;
+  color: black;
+  border: 2px solid black;
+  height: 30px;
+  width: 60px;
+  cursor: pointer;
+}
+.button2:hover {
+  background: #C1CFDA;
+  color: black;
+}
+
+.button3 {
+  background-color: #4175FC;;
+  color: black;
+  border: 2px solid black;
+  height: 30px;
+  width: 60px;
+  cursor: pointer;
+  
+}
+.button3:hover {
+  background: #C1CFDA;
+  color: black;
+}
+
+.button4 {
+  background-color: #4175FC;;
+  color: black;
+  border: 2px solid black;
+  height: 30px;
+  width: 60px;
+  cursor: pointer;
+}
+
+.button4:hover {
+  background: #C1CFDA;
+  color: black;
+}
+
+h2 {
+  padding: 60px;
+  text-align: center;
+  color: white;
+  font-size: 500 px;
+}
+
+h4 {
+  padding: 0%;
+  text-align: center;
+  color: white;
+  font-size: 100 px;
+}
+
+body {
+  background: #084AF3;
+}
+
+.phishing{
+  display: flex;
+  justify-content: center;
+  padding-top: 50px;
+  position:absolute;
+  top: 13%;
+  right: 40%;
+}
+
+.center {
+  margin: 0%;
+  position: absolute;
+  bottom: 10%;
+  left: 50%;
+
+     -ms-transform: translate(-50%, -50%)  ;
+        -o-transform: translate(-50%, -50%) ;
+              transform: translate(-50%, -50%) ;
+}
+
+
+h3 {
+  text-align: center;
+  padding: 80px;
+  color: white;
+  font-size: 1000 px;
+}
+  
