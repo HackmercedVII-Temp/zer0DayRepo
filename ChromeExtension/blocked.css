@@ -1,12 +1,13 @@
 button {
     height: 40px;
     width: 40px;
-    outline:thick;
     margin: 30px;
-    margin-left: 150px;
-    border: none;
-    border-radius: 2px;
-    align-items: center;
+    margin-left: 200px;
+    border-color: red;
+    border-style: groove;
+    font-size: 20px;
+    border-radius: 5px;
+    align-items:center;
   }
   
   button.current {
@@ -24,6 +25,7 @@ button {
     position:relative;
     text-align: center;
     font-size: 20px;
+    margin-left: 40px;
   }
   html body{
       background-color: grey;
