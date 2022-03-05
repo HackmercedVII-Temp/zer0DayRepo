@@ -20,7 +20,7 @@
   border: 2px solid #008CBA;
  }
 
- .button1:hover {      
+ .button1 :hover {      
    background-color: #008CBA;      
    color: white; 
   }
@@ -31,5 +31,20 @@
     border: 2px solid #008CBA;
   }
 
+  .button2 :hover {
+    background-color: #008CBA;      
+    color: white; 
+  }
+
+  .button3 {
+    background-color: white;
+    color: black;
+    border: 2px solid #008CBA;
+  }
+
+  .button3 :hover{
+    background-color: #008CBA;      
+    color: white; 
+  }
   
   
