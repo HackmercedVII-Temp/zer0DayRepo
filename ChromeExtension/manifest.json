@@ -4,8 +4,10 @@
     "version": "1.0",
     "manifest_version": 3, 
     
-    "background": {
-        "service_worker": "background.js"
+    "author": "Sampurna Chapagain",
+    "action":{
+        "default_popup": "index.html",
+        "default_title": "Latest Covid Report"
     },
 
     "permissions": ["storage"]
