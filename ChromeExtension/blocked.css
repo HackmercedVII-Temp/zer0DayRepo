@@ -1,13 +1,27 @@
 button {
     height: 60px;
     width: 60px;
-    margin: 30px;
-    margin-left: 450px;
+    display: flex;
+    justify-content: center;
     border-color: red;
     border-style: groove;
     font-size: 20px;
     border-radius: 5px;
-    position:relative;
+    
+  }
+  .container { 
+    height: 200px;
+    position: relative;
+    border: 3px solid green; 
+  }
+  
+  .center {
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
   }
   
   button.current {
@@ -31,7 +45,6 @@ button {
       background-color: grey;
   }
 .phishing{
- max-width: 50%;
- max-height: 70%;
- margin-left: 150px;
+    display: flex;
+    justify-content: center;
 }
