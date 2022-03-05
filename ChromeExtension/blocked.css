@@ -1,12 +1,13 @@
 button {
     height: 60px;
-    width: 60px;
-    display: flex;
+    width: 300px;
+    display:list-item;
     justify-content: center;
-    border-color: red;
-    border-style: groove;
+    border-color: black;
+    border-style:solid;
     font-size: 20px;
     border-radius: 5px;
+    text-align: center;
     
   }
   .container { 
@@ -17,7 +18,7 @@ button {
   .center {
     margin: 0;
     position: absolute;
-    top: 50%;
+    top: 25%;
     left: 50%;
     -ms-transform: translate(-50%, -50%);
     transform: translate(-50%, -50%);
@@ -46,4 +47,5 @@ button {
 .phishing{
     display: flex;
     justify-content: center;
+    padding-top: 50px;
 }
