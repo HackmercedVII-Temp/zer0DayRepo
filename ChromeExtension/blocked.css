@@ -30,3 +30,7 @@ button {
   html body{
       background-color: grey;
   }
+.phishing{
+ max-width: 100%;
+ max-height: 100%;
+}
