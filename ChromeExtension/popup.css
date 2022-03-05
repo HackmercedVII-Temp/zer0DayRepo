@@ -30,5 +30,24 @@
   border: 2px solid #008CBA;
 }
 
+h2 {
+  padding: 60px;
+  text-align: center;
+  color: white;
+  font-size: 500 px;
+}
+
+h4 {
+  padding: 60px;
+  text-align: center;
+  color: white;
+  font-size: 1000 px;
+}
+
+body {
+  background: #1abc9c;
+}
+
+
   
   
