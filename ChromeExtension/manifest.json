@@ -4,7 +4,7 @@
     "version": "1.0",
     "manifest_version": 3, 
     
-    "author": "Khalid Ali, Jason,",
+    "author": "Khalid Ali, Jason, Javier, Michael",
     "action":{
         "default_popup": "index.html",
         "default_title": "Zer0Day AntiScam"
