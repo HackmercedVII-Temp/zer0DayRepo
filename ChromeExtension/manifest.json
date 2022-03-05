@@ -4,7 +4,7 @@
     "version": "1.0",
     "manifest_version": 3, 
     
-    "author": "Sampurna Chapagain",
+    "author": "Khalid Ali, Jason,",
     "action":{
         "default_popup": "index.html",
         "default_title": "Latest Covid Report"
