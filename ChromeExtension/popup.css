@@ -9,30 +9,30 @@
     font-size: 5px;
     border-radius: 5px;
     text-align: center;
-    background-color: #48C9B0;
+    background-color: #4175FC;
     color: black;
  }
 
 .button2 {
-  background-color: #00FDFF;
+  background-color: #4175FC;
   color: black;
-  border: 2px solid #008CBA;
+  border: 2px solid black;
   height: 30px;
   width: 60px;
 }
 
 .button3 {
-  background-color: #00FDFF;
+  background-color: #4175FC;;
   color: black;
-  border: 2px solid #008CBA;
+  border: 2px solid black;
   height: 30px;
   width: 60px;
 }
 
 .button4 {
-  background-color: #00FDFF;
+  background-color: #4175FC;;
   color: black;
-  border: 2px solid #008CBA;
+  border: 2px solid black;
   height: 30px;
   width: 60px;
 }
@@ -52,7 +52,7 @@ h4 {
 }
 
 body {
-  background: #1abc9c;
+  background: #084AF3;
 }
 
 .phishing{
