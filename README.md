@@ -6,7 +6,7 @@ In today's world, carelessly browsing the internet can be dangerous. Due to the 
 
 ## Product pitch
 
-Our product is a Chrome extension that detects whether a logo of a brand is valid or not through AI and alerts the user whether or not they want to proceed to the website. Users can adjust how secure they want to be with low, medium, and high settings.
+Our product is a Chrome extension that detects whether the site is a phishing site or not through AI and alerts the user whether or not they want to proceed to the website. Users can adjust how secure they want to be with low, medium, and high settings.
 
 ## Technologies we utilized
 
