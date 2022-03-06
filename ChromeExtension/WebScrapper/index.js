@@ -6,7 +6,7 @@ const express = require('express')
 
 const app = express()
 
-const url = 'https://www.theguardian.com/uk'
+const url = 'https://sites.google.com/view/obvious-scamfor-test-purposes/home'
 
 //app.METHOD(PATH, HANDLER)
 
@@ -23,11 +23,11 @@ app.get('/results', (req, res) => {
         const domains = []
         //const titles
         //const color
-        $('.fc-item__title', html).each(function () { //<-- cannot be a function expression
-            const title = $(this).text()
-            const url = $(this).find('a').attr('href')
+        $('.t3iYD', html).each(function () { //<-- cannot be a function expression
+            //const title = $(this).text()
+            const url = $(this).find('img').attr('src')
             domains.push({
-                title,
+                //title,
                 url
             })
         })
