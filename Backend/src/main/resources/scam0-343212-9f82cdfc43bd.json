@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "scam0-343212",
+  "private_key_id": "9f82cdfc43bdbdcc797248e235bd37a5ccf520c2",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDIj4KdrV6l/AGF\nNvLrRfbJmFx5fZ4XFz7qcIRKW89sViMEhXug7bLmdnQARSXZ33eRs11/PXYaz2p5\naO2K9WLp2eT78G1iZuCDh1CyOIYSL6TiUvTPM/FA5RACDLgBOfygHysk5u/1cAvB\nEzvoihvYJPQvXLFrWRPUzeU+GABK9ngIl51k2YN4rs1QVMOjLa9MnwrE/klQ2jp0\n+0JMLaGIMnyZH2i6WxuFM+gvnc1Y6UeW2KXdASlKFZ54U6m14vNwZl7oKkyHP50v\nzPaOtoNr3S98NrVLB2t884FflRxEV4hiQU98gRvS2nlkoDJI/bLv4FQFrzuwztYs\nX6zkcPynAgMBAAECggEAFMH9s9IgzK8jfSUtyToJi93wHEbrGNq4EU2p84RDGKRl\npW8nV4WikYXLBcgiXcVqO7NDxwqWcbnr/Drm8w3ouelqcMT2nUumixZzPK7q+XDi\n8OXDHrryilPq7ztfxAi7Y9s1/PDF/zIklUwnVC8PKLTSbSB74G9sxQa2ZlHXnepr\no87d8dM0ViDDjhbKVlHKCVlaThC4jqnJpJHCGZBhyaZsDOoccpcbpbnIuwwNZ0So\nUxEOHQiHLQ0nx7gOFPn1ypbLMEjOZ5aZ+F4nBfE91iQYZzejvX+5UVzlGFhrVXDF\nRL3clyCl0Wfp8fs8stTGuzknu3Bkkj3M6Y5iiIOnyQKBgQDk710Dlq57Rxu5uSo2\n3Q3hsVpVrQfmvLZkuadZLoMw4sgdo5d6outGEbGwJQWdc+vyTMmgJ6WwRbcJfEeO\nBQ/bcmZzPYlLALsY5QNFjaBYyH0UyRUdj9VnZCvuddj03xYc2F/5iXL/DKqVLL4P\niN39ZhqN2cFyKLXzMk8dpWm/cwKBgQDgRWesYsAav/gVolMbF7dln6tgiXzVj/AK\nyF8E4aOFI3bC7GQ2h1G1CaCyXh/Zt//gkMWSGmeUbualaCUZuht9kkN8cIuK9vyg\naSCYWwOufgOUXcIvG1fNVKrMMgcyKDlHZpZLFI999M7OrAG8xUbJutc2Wrk2iunu\nNdX7RBQY/QKBgCq1RMLgn1g8Ib35/xgREP/jmBiXmPvAhL4xrDiE5tB93hs5Y47r\nSbzenCliHrQK5h9jl9Ga09wYhVbtqmOiKh0kMFybRDuLvVudjYiyLRGjBUKVaK0F\nIiiRlWh876Zu368t5mmk7KEL+d6uZB59x/v3ykhgMShc0+S0o/HB5AJlAoGBALhM\nUMX44KUa3GPq4SCCfNOmQs8yLMPTZQ93WZ5JTnc6jX3hhPjKevqqzsPFVac07bE9\nRx6pVDVGbYO/8b0Sk0S9zXeVhRbNoQyxV3fcU0oxg/+IjOrpLV4vFax38DHnnCpw\nw1EvtDtt0gVElKjr9SARyomARHPt9A8tborthxaBAoGAQOd1rhLEjo0r7Zkeynbt\nV8nJKrS8/khd3qDbr5jiSqHy0C9EH9s7l1qIFxZxGEdRREDnmVetqO0raWY6j+NY\n+VO0WEULzL3Y6jK0c/gKAITbx9J/cIJx2cTefg9A+BJO5DCna8hon3F0QdbsHV03\nn6UUZ9erdT8haCi7Q38kmBk=\n-----END PRIVATE KEY-----\n",
+  "client_email": "scam0-vision@scam0-343212.iam.gserviceaccount.com",
+  "client_id": "100376630740028775601",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/scam0-vision%40scam0-343212.iam.gserviceaccount.com"
+}
