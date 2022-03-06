@@ -1,15 +1,14 @@
 package com.example.demo.Dependency;
 
-import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.OutputStream;
 import java.net.URL;
 import java.util.UUID;
 
-import javax.imageio.ImageIO;
-
+import org.apache.batik.transcoder.TranscoderInput;
+import org.apache.batik.transcoder.TranscoderOutput;
+import org.apache.batik.transcoder.image.PNGTranscoder;
 import org.apache.commons.io.FileUtils;
 
 import lombok.Getter;
@@ -32,8 +31,7 @@ public class FileDownloader {
 			if (imageFile.exists()) {
 				convertedFile = new File(
 						System.getProperty("java.io.tmpdir") + "\\" + UUID.randomUUID().toString() + ".jpeg");
-				convertFormat(imageFile.getAbsolutePath(), convertedFile.getAbsolutePath(), "JPEG");
-				System.out.println("Flag 4");
+				convertFormat(imageFile.getAbsolutePath(), convertedFile.getAbsolutePath());
 				if (convertedFile.exists()) {
 					System.out.println("converted file path: " + convertedFile.getAbsolutePath());
 					return;
@@ -75,21 +73,42 @@ public class FileDownloader {
 		}
 	}
 
-	public static boolean convertFormat(String inputImagePath, String outputImagePath, String formatName)
-			throws IOException {
-		FileInputStream inputStream = new FileInputStream(inputImagePath);
-		FileOutputStream outputStream = new FileOutputStream(outputImagePath);
+	public boolean convertFormat(String inputImagePath, String outputImagePath) {
+		String extension = inputImagePath.substring(inputImagePath.lastIndexOf(".") + 1);
+		extension = extension.toLowerCase();
+		switch (extension) {
+		case "svg":
+			return SVGtoPNG(inputImagePath, outputImagePath);
+		default:
+			convertedFile = null;
+			return false;
+		}
+	}
 
-		// reads input image from file
-		BufferedImage inputImage = ImageIO.read(inputStream);
+	public boolean SVGtoPNG(String inputImagePath, String outputImagePath) {
+		TranscoderInput transcoderInput = new TranscoderInput(imageUrl);
+		try {
+			OutputStream outputStream = new FileOutputStream(outputImagePath);
+			TranscoderOutput transcoderOutput = new TranscoderOutput(outputStream);
 
-		boolean result = ImageIO.write(inputImage, formatName, outputStream);
+			PNGTranscoder pngTranscoder = new PNGTranscoder();
+			pngTranscoder.transcode(transcoderInput, transcoderOutput);
 
-		// needs to close the streams
-		outputStream.close();
-		inputStream.close();
-
-		return result;
+			outputStream.flush();
+			outputStream.close();
+			convertedFile = new File(outputImagePath);
+			if (!convertedFile.exists()) {
+				System.out.println("Svg not converted");
+				convertedFile = null;
+				return false;
+			} else {
+				System.out.println("Svg converted to " + outputImagePath);
+				return true;
+			}
+		} catch (Exception e) {
+			convertedFile = null;
+			return false;
+		}
 	}
 
 }

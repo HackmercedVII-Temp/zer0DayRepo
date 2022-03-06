@@ -12,4 +12,7 @@ public interface ValidDomainsRepository extends CrudRepository<ValidDomainsEntit
 	public List<ValidDomainsEntity> findByCompanyName(String companyName);
 
 	public List<ValidDomainsEntity> findByCompanyDomain(String CompanyDomain);
+
+	@Override
+	public List<ValidDomainsEntity> findAll();
 }

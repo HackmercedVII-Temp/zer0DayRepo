@@ -8,6 +8,8 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import com.google.common.net.InternetDomainName;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -29,6 +31,15 @@ public class SiteRequest {
 		try {
 			jsonObject = (JSONObject) parser.parse(JSON);
 			domain = (String) jsonObject.get("Domain");
+			if (domain == null) {
+				isInitialized = false;
+				return;
+			}
+			if (domain.isBlank()) {
+				isInitialized = false;
+				return;
+			}
+			domain = InternetDomainName.from(domain).topPrivateDomain().topDomainUnderRegistrySuffix().toString();
 
 			JSONArray imgURLArray = (JSONArray) jsonObject.get("Image_URLS");
 			Iterator<String> imgUrlIterator = imgURLArray.iterator();
@@ -47,16 +58,6 @@ public class SiteRequest {
 			while (textIterator.hasNext()) {
 				siteText.add(textIterator.next().toString());
 			}
-
-			if (domain == null) {
-				isInitialized = false;
-				return;
-			}
-			if (domain.isBlank()) {
-				isInitialized = false;
-				return;
-			}
-
 			isInitialized = true;
 		} catch (ParseException e) {
 			isInitialized = false;

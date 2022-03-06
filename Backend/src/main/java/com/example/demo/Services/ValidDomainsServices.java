@@ -32,9 +32,7 @@ public class ValidDomainsServices {
 		if (domain == null) {
 			return false;
 		}
-		String domainName = InternetDomainName.from(domain).topPrivateDomain().topDomainUnderRegistrySuffix()
-				.toString();
-		if (validDomainsRepository.findByCompanyDomain(domainName).size() > 0) {
+		if (validDomainsRepository.findByCompanyDomain(domain).size() > 0) {
 			return true;
 		}
 		return false;
