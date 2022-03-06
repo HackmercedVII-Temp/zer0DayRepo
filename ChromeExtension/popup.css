@@ -85,6 +85,11 @@ body {
   position:absolute;
   top: 13%;
   right: 40%;
+  -webkit-transform:rotate(-30deg);
+  -moz-transform: rotate(-30deg);
+  -ms-transform: rotate(-30deg);
+  -o-transform: rotate(-30deg);
+  transform: rotate(-30deg);
 }
 
 .center {
@@ -106,3 +111,26 @@ h3 {
   font-size: 1000 px;
 }
   
+.button5{
+  width: 450px;
+  height: 50px;
+  background-color: #D4E4F7;
+  color: white
+}
+
+.button5:hover {
+  background: #C1CFDA;
+  color: black;
+}
+
+.button6{
+  width: 450px;
+  height: 50px;
+  background-color: #D4E4F7;
+  color: white
+}
+
+.button6:hover {
+  background: #C1CFDA;
+  color: black;
+}
