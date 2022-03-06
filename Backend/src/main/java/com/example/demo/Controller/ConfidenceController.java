@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -35,6 +36,15 @@ public class ConfidenceController {
 	private static List<ValidDomainsEntity> allDomains = null;
 
 	private static Map<String, String> cachedImages = new HashMap<String, String>();
+
+//https://seattlecanineclub.net/wp-content/uploads/2018/01/AMAZON-1200x537.png
+
+	@GetMapping("/DecodeImage")
+	public String decodeImage(@RequestParam(value = "image64") String image64) {
+		byte[] decodedBytes = Base64.getDecoder().decode(image64);
+		String decodedString = new String(decodedBytes);
+		return GoogleVisions.detectLogos(decodedString);
+	}
 
 	@RequestMapping(value = "/CalculateConfidence", method = RequestMethod.POST, consumes = "text/plain")
 	public String calculateConfidence(@RequestBody String JSON) {
@@ -88,10 +98,8 @@ public class ConfidenceController {
 				scoreToDeduct += 3;
 				similarity -= .05;
 			}
-			if (scoreToDeduct > 10) {
-				return 10;
-			}
-			return scoreToDeduct;
+
+			return Math.min(scoreToDeduct, 20);
 		}
 		return 0;
 	}
@@ -105,11 +113,9 @@ public class ConfidenceController {
 			} else {
 				String googleVisionsOutput = GoogleVisions.detectLogos(imageURL).toLowerCase();
 				corperationLogos.add(googleVisionsOutput);
-				cachedImages.put(imageURL, imageURL);
+				cachedImages.put(imageURL, googleVisionsOutput);
 			}
 		}
-
-		boolean didMatch = false;
 		for (String corperationName : corperationLogos) {
 			if (corperationName.toLowerCase().contains(validDomainsEntity.getCompanyName().toLowerCase())) {
 				if (numberMatching.containsKey(validDomainsEntity.getCompanyName())) {
@@ -118,7 +124,6 @@ public class ConfidenceController {
 				} else {
 					numberMatching.put(validDomainsEntity.getCompanyName(), 1);
 				}
-				break;
 			}
 		}
 

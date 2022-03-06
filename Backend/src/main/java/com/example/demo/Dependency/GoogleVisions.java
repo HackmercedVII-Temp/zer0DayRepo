@@ -19,7 +19,7 @@ import com.google.protobuf.ByteString;
 public class GoogleVisions {
 
 	private static ArrayList<String> GC_SUPPORTED_FILE_TYPE_EXTENSIONS = new ArrayList<String>(
-			Arrays.asList("PNG8", "PNG24", "GIF", "JPEG", "BMP", "WEBP", "RAW", "ICO", "PDF", "TIFF"));
+			Arrays.asList("PNG8", "PNG24", "GIF", "JPEG", "BMP", "WEBP", "RAW", "ICO", "PDF", "TIFF", "PNG"));
 
 	public static String detectLogosBase64(String filePath) throws IOException {
 		List<AnnotateImageRequest> requests = new ArrayList<>();
