@@ -10,17 +10,18 @@ const url = 'https://sites.google.com/view/obvious-scamfor-test-purposes/home'
 
 //app.METHOD(PATH, HANDLER)
 
-app.get('/', function (req, res){
+/*app.get('/', function (req, res){
     res.json('This is my webscraper')
-})
+})*/
 //displayed on localhost:8000
-app.get('/results', (req, res) => {
+//app.get('/results', (req, res) => {
     axios(url)
     .then(response => {
         const html = response.data
         //console.log(html)
         const $ = cheerio.load(html)
-        const domains = []
+        /*const domains = []
+        const textWords = []
         //const titles
         //const color
         $('.t3iYD', html).each(function () { //<-- cannot be a function expression
@@ -31,11 +32,19 @@ app.get('/results', (req, res) => {
                 url
             })
         })
+        $('.t3iYD', html).each(function () { //<-- cannot be a function expression
+            const title = $(this).text()
+            const url = $(this).find('img').attr('src')
+            textWords.push({
+                //title,
+                url
+            })
+        })
         res.json(domains)
-        //console.log(articles)    
-    }).catch(err => console.log(err))
-})
-
+        res.json(textWords)*/
+        console.log(html)    
+    })//.catch(err => console.log(err))
+//})
 
 
 
