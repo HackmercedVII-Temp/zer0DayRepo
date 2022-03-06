@@ -29,6 +29,14 @@
 	  </dependencies>
 	</dependencyManagement>
 	
+	<repositories>
+        <repository>
+            <id>AsposeJavaAPI</id>
+            <name>Aspose Java API</name>
+            <url>https://artifact.aspose.com/repo/</url>
+        </repository>
+    </repositories>
+	
 	<dependencies>
 		<dependency>
 	        <groupId>org.springframework.boot</groupId>
@@ -88,6 +96,11 @@
 		<dependency>
 		    <groupId>com.google.guava</groupId>
 		    <artifactId>guava</artifactId>
+		</dependency>
+		<dependency>
+		    <groupId>batik</groupId>
+		    <artifactId>batik-transcoder</artifactId>
+		    <version>1.6-1</version>
 		</dependency>
 		
 	</dependencies>

@@ -1,11 +1,11 @@
 package com.example.demo.Controller;
 
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Base64;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -14,63 +14,135 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.demo.Dependency.FileDownloader;
+import com.example.demo.Dependency.GoogleVisions;
 import com.example.demo.Dependency.SiteRequest;
+import com.example.demo.Dependency.StringSimilarityComparitor;
 import com.example.demo.Entities.ValidDomainsEntity;
+import com.example.demo.Repositories.ValidDomainsRepository;
 import com.example.demo.Services.ValidDomainsServices;
-import com.google.cloud.vision.v1.AnnotateImageRequest;
-import com.google.cloud.vision.v1.AnnotateImageResponse;
-import com.google.cloud.vision.v1.BatchAnnotateImagesResponse;
-import com.google.cloud.vision.v1.EntityAnnotation;
-import com.google.cloud.vision.v1.Feature;
-import com.google.cloud.vision.v1.Image;
-import com.google.cloud.vision.v1.ImageAnnotatorClient;
-import com.google.cloud.vision.v1.ImageSource;
-import com.google.protobuf.ByteString;
 
 @RestController
 public class ConfidenceController {
 
+	private static double DOMAIN_SIMILARITY_PERCENTAGE = 0.65;
+
 	@Autowired
 	ValidDomainsServices validDomainsServices;
 
-	private static ArrayList<String> GC_SUPPORTED_FILE_TYPE_EXTENSIONS = new ArrayList<String>(
-			Arrays.asList("PNG8", "PNG24", "GIF", "JPEG", "BMP", "WEBP", "RAW", "ICO", "PDF", "TIFF"));
+	@Autowired
+	ValidDomainsRepository validDomainsRepository;
+
+	private static List<ValidDomainsEntity> allDomains = null;
+
+	private static Map<String, String> cachedImages = new HashMap<String, String>();
 
 	@RequestMapping(value = "/CalculateConfidence", method = RequestMethod.POST, consumes = "text/plain")
 	public String calculateConfidence(@RequestBody String JSON) {
-		int confidenceLevel = 100;
+		ValidDomainsEntity mostLikeyImpersonation = null;
+		if (allDomains == null) {
+			allDomains = validDomainsRepository.findAll();
+		}
+
+		int lowestConfidenceLevel = 100;
 
 		SiteRequest siteRequest = new SiteRequest(JSON);
-		siteRequest.print();
 		if (!siteRequest.isInitialized()) {
 			return "error";
 		}
-
 		if (isOfficialDomain(siteRequest.getDomain())) {
 			return "100";
 		}
 
-		return "0";
+		for (ValidDomainsEntity validDomainsEntity : allDomains) {
+			int confidenceLevel = 100;
+			confidenceLevel -= isIntentionallyMisspelledDomain(validDomainsEntity, siteRequest.getDomain());
+			confidenceLevel -= percentageMatchingLogo(validDomainsEntity, siteRequest.getImageURLs());
+
+			if (lowestConfidenceLevel > confidenceLevel) {
+				lowestConfidenceLevel = confidenceLevel;
+				mostLikeyImpersonation = validDomainsEntity;
+			}
+		}
+		if (lowestConfidenceLevel == 100) {
+			return "{\"Confidence-Level\":" + Integer.toString(lowestConfidenceLevel) + "}";
+
+		}
+		return "{\"Confidence-Level\":" + Integer.toString(lowestConfidenceLevel) + "\n\"Most-Likely-Impersonation\":\""
+				+ mostLikeyImpersonation.getCompanyName() + "\"}";
+
 	}
 
 	public boolean isOfficialDomain(String Domain) {
 		return validDomainsServices.isOfficialDomain(Domain);
 	}
 
-	public double isIntentionallyMisspelledDomain(ValidDomainsEntity validDomainsEntity, String domainName) {
+	public int isIntentionallyMisspelledDomain(ValidDomainsEntity validDomainsEntity, String domainName) {
+		Double similarity = StringSimilarityComparitor.getSimilarity(domainName, validDomainsEntity.getCompanyDomain());
+		if (similarity != 1.0) {
+			if (similarity < DOMAIN_SIMILARITY_PERCENTAGE) {
+				return 0;
+			}
+			similarity -= DOMAIN_SIMILARITY_PERCENTAGE;
+			int scoreToDeduct = 0;
+			while (similarity > 0) {
+				scoreToDeduct += 3;
+				similarity -= .05;
+			}
+			if (scoreToDeduct > 10) {
+				return 10;
+			}
+			return scoreToDeduct;
+		}
+		return 0;
+	}
+
+	public int percentageMatchingLogo(ValidDomainsEntity validDomainsEntity, List<String> imageURLs) {
+		Map<String, Integer> numberMatching = new HashMap<String, Integer>();
+		List<String> corperationLogos = new LinkedList<>();
+		for (String imageURL : imageURLs) {
+			if (cachedImages.containsKey(imageURL)) {
+				corperationLogos.add(cachedImages.get(imageURL));
+			} else {
+				String googleVisionsOutput = GoogleVisions.detectLogos(imageURL).toLowerCase();
+				corperationLogos.add(googleVisionsOutput);
+				cachedImages.put(imageURL, imageURL);
+			}
+		}
+
+		boolean didMatch = false;
+		for (String corperationName : corperationLogos) {
+			if (corperationName.toLowerCase().contains(validDomainsEntity.getCompanyName().toLowerCase())) {
+				if (numberMatching.containsKey(validDomainsEntity.getCompanyName())) {
+					numberMatching.put(validDomainsEntity.getCompanyName(),
+							numberMatching.get(validDomainsEntity.getCompanyName()) + 1);
+				} else {
+					numberMatching.put(validDomainsEntity.getCompanyName(), 1);
+				}
+				break;
+			}
+		}
+
+		int largestMatchingCompanyLogos = 0;
+		for (Integer value : numberMatching.values()) {
+			if (value > largestMatchingCompanyLogos) {
+				largestMatchingCompanyLogos = value;
+			}
+		}
+		int totalAmountOfImages = imageURLs.size();
+		largestMatchingCompanyLogos -= Math.max(totalAmountOfImages / 10, 1);
+		if (largestMatchingCompanyLogos <= 0) {
+			return 0;
+		} else {
+			return Math.min(largestMatchingCompanyLogos * 5, 30);
+		}
 
 	}
 
-	public double percentageMatchingLogo(ValidDomainsEntity validDomainsEntity, List<String> imageURLs) {
+	public int percentageMatchingText(ValidDomainsEntity validDomainsEntity, List<String> siteText) {
 
 	}
 
-	public double percentageMatchingText(ValidDomainsEntity validDomainsEntity, List<String> siteText) {
-
-	}
-
-	public double percentageMatchingColor(ValidDomainsEntity validDomainsEntity, List<String> siteColors) {
+	public int percentageMatchingColor(ValidDomainsEntity validDomainsEntity, List<String> siteColors) {
 
 	}
 
@@ -78,108 +150,6 @@ public class ConfidenceController {
 	public static String logoDecoder(@RequestParam(value = "testval") String testval) throws IOException {
 		byte[] decodedBytes = Base64.getDecoder().decode(testval);
 		String decodedString = new String(decodedBytes);
-		return detectLogos(decodedString);
+		return GoogleVisions.detectLogos(decodedString);
 	}
-
-	public static String detectLogos(String URL) {
-		String extension = URL.substring(URL.lastIndexOf(".") + 1);
-		if (GC_SUPPORTED_FILE_TYPE_EXTENSIONS.contains(extension.toUpperCase())) {
-			try {
-				return detectLogosURLs(URL);
-			} catch (IOException e) {
-
-			}
-		} else {
-			FileDownloader fileDownloader = new FileDownloader(URL);
-			if (fileDownloader.getConvertedFile() != null) {
-				String response;
-				try {
-					if (fileDownloader.getConvertedFile() != null) {
-						if (fileDownloader.getConvertedFile().exists()) {
-							response = detectLogosBase64(fileDownloader.getConvertedFile().getAbsolutePath());
-							fileDownloader.delete();
-							return response;
-						} else {
-							return "Failed to Convert File";
-						}
-					} else {
-						return "Failed to Convert File";
-					}
-				} catch (IOException e) {
-					return "Unsupported File";
-				}
-			}
-			return "Could Not Get Image File";
-		}
-		return "Could Not Get Image File";
-	}
-
-	public static String detectLogosURLs(String url) throws IOException {
-		String responseString = "";
-
-		List<AnnotateImageRequest> requests = new ArrayList<>();
-
-		ImageSource imgSource = ImageSource.newBuilder().setImageUri(url).build();
-		Image img = Image.newBuilder().setSource(imgSource).build();
-		Feature feat = Feature.newBuilder().setType(Feature.Type.LOGO_DETECTION).build();
-		AnnotateImageRequest request = AnnotateImageRequest.newBuilder().addFeatures(feat).setImage(img).build();
-		requests.add(request);
-		try (ImageAnnotatorClient client = ImageAnnotatorClient.create()) {
-			BatchAnnotateImagesResponse response = client.batchAnnotateImages(requests);
-			List<AnnotateImageResponse> responses = response.getResponsesList();
-
-			for (AnnotateImageResponse res : responses) {
-				if (res.hasError()) {
-					String tempMsg = res.getError().getMessage();
-					responseString = responseString + "\n" + tempMsg;
-					System.out.format("Error: %s%n", tempMsg);
-					client.close();
-					return responseString;
-				}
-
-				// For full list of available annotations, see http://g.co/cloud/vision/docs
-				for (EntityAnnotation annotation : res.getLogoAnnotationsList()) {
-					String tempMsg = annotation.getDescription();
-					responseString = responseString + "\n" + tempMsg;
-					System.out.println(tempMsg);
-				}
-			}
-			client.close();
-		}
-		return responseString;
-	}
-
-	// Detects logos in the specified local image.
-
-	public static String detectLogosBase64(String filePath) throws IOException {
-		List<AnnotateImageRequest> requests = new ArrayList<>();
-
-		ByteString imgBytes = ByteString.readFrom(new FileInputStream(filePath));
-
-		Image img = Image.newBuilder().setContent(imgBytes).build();
-		Feature feat = Feature.newBuilder().setType(Feature.Type.LOGO_DETECTION).build();
-		AnnotateImageRequest request = AnnotateImageRequest.newBuilder().addFeatures(feat).setImage(img).build();
-		requests.add(request);
-		String finalOutput = "";
-		try (ImageAnnotatorClient client = ImageAnnotatorClient.create()) {
-			BatchAnnotateImagesResponse response = client.batchAnnotateImages(requests);
-			List<AnnotateImageResponse> responses = response.getResponsesList();
-
-			for (AnnotateImageResponse res : responses) {
-				if (res.hasError()) {
-					System.out.format("Error: %s%n", res.getError().getMessage());
-					client.close();
-					return res.getError().getMessage();
-				}
-
-				// For full list of available annotations, see http://g.co/cloud/vision/docs
-				for (EntityAnnotation annotation : res.getLogoAnnotationsList()) {
-					finalOutput = finalOutput + "\n" + annotation.getDescription();
-				}
-			}
-			client.close();
-			return finalOutput;
-		}
-	}
-
 }
