@@ -20,13 +20,14 @@ const url = 'https://sites.google.com/view/obvious-scamfor-test-purposes/home'
         const html = response.data
         //console.log(html)
         const $ = cheerio.load(html)
-        /*const domains = []
-        const textWords = []
+        const domains = []
+        //const domains = []
+        //const textWords = []
         //const titles
         //const color
         $('.t3iYD', html).each(function () { //<-- cannot be a function expression
             //const title = $(this).text()
-            const url = $(this).find('img').attr('src')
+            const url = $(this).find('link').attr('href')
             domains.push({
                 //title,
                 url
@@ -41,8 +42,8 @@ const url = 'https://sites.google.com/view/obvious-scamfor-test-purposes/home'
             })
         })
         res.json(domains)
-        res.json(textWords)*/
-        console.log(html)    
+        res.json(textWords)
+        console.log(domains)    
     })//.catch(err => console.log(err))
 //})
 
