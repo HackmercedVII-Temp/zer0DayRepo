@@ -1,14 +1,17 @@
 {
     "name": "Zer0Day Lure",
-    "description": "Building an Extension for Zer0Day",
+    "description": "Building a ChromeExtension for Zer0Day",
     "version": "1.0",
-    "manifest_version": 3, 
+    "manifest_version": 2, 
     
     "author": "Khalid , Jason, Javier, Michael",
     "action":{
         "default_popup": "popup.html",
         "default_title": "Zer0Day Lure"
     },
-
+    "background":{
+        "scripts": ["script.js"]
+    },
+    "default_locale": "en",
     "permissions": ["storage"]
 }
