@@ -1,105 +1,27 @@
-const PORT = 8000
+const express = require("express");
+const axios = require("axios");
+const cheerio = require('cheerio');
+const bodyParser = require('body-parser');
 
-const axios = require('axios')
-const cheerio = require('cheerio')
-const express = require('express')
+const app = express();//binds the express module to 'app'
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
-const app = express()
-
-const url = 'https://sites.google.com/view/obvious-scamfor-test-purposes/home'
-
-//app.METHOD(PATH, HANDLER)
-
-/*app.get('/', function (req, res){
-    res.json('This is my webscraper')
-})*/
-//displayed on localhost:8000
-//app.get('/results', (req, res) => {
-    axios(url)
-    .then(response => {
-        const html = response.data
-        //console.log(html)
-        const $ = cheerio.load(html)
-        const domains = []
-        //const domains = []
-        //const textWords = []
-        //const titles
-        //const color
-        $('.t3iYD', html).each(function () { //<-- cannot be a function expression
-            //const title = $(this).text()
-            const url = $(this).find('link').attr('href')
-            domains.push({
-                //title,
-                url
-            })
-        })
-        $('.t3iYD', html).each(function () { //<-- cannot be a function expression
-            const title = $(this).text()
-            const url = $(this).find('img').attr('src')
-            textWords.push({
-                //title,
-                url
-            })
-        })
-        res.json(domains)
-        res.json(textWords)
-        console.log(domains)    
-    })//.catch(err => console.log(err))
-//})
-
-
-
-
-app.listen(PORT, () => console.log('server running on PORT ${PORT}'))
-
-
-
-
-
-
-
-
-
-
-/*async function main() {
-    let {data} = await axios.get('https://web-scraper-tutorial.netlify.app/')
-    let $ = cheerio.load(data)
-    let text = $('div.col-12 > h2#favourite').text()
-    //let text = $('div.container.bg-secondary > p.text-warning').text()
-    console.log(text)
-*/
-/*
-loop through elements <p>
-
-let paragraphs = document.querySelectorAll('p')
-for(paragraph of paragraphs) {
-    let text = paragraph.innerText
-    console.log(text)
+getAllImg = () => {
+    return $('img').map(function () { return $(this).attr('src'); });
 }
-    
-jquery sample for console 
+app.post("/url", function (req, res) {
+    var link = req.body.url;
+    var temp;
+    axios.get(link).then((response) => {
+        var imgs = getAllImg(res);
+        temp = { "domain": link.split("/", 3), "code": res.data, "image": imgs }
+    }, (error) => {
+        res.sendStatus(400);
+    })
+    res.send(temp);
+});
 
-let paragraphs = $('p')
-for(paragraph of paragraphs) {
-   let text = $(paragraph).text()
-   console.log(text)
-}
-
-  }
-
-  main()
-
-
-
-
-
-
-  app.get() //get data 
-  
-  app.post() //add 
-
-  app.put() //edit
-  
-  app.delete() //delete data
-
-*/
+app.listen(3001, function () {
+    console.log("SERVER STARTED ON localhost:3001");
+})
