@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.Entities.ValidDomainsEntity;
 import com.example.demo.Repositories.ValidDomainsRepository;
+import com.google.common.net.InternetDomainName;
 
 @Service
 public class ValidDomainsServices {
@@ -15,7 +16,10 @@ public class ValidDomainsServices {
 	ValidDomainsRepository validDomainsRepository;
 
 	public String displayCompanyColors() {
-		List<ValidDomainsEntity> listOfCompanies = validDomainsRepository.findByCompanyNameLike("Amazo");
+		String domainName = InternetDomainName.from("www.amazon.com").topPrivateDomain().topDomainUnderRegistrySuffix()
+				.toString();
+		System.out.print(domainName);
+		List<ValidDomainsEntity> listOfCompanies = validDomainsRepository.findByCompanyDomain(domainName);
 		String result = "List size: " + listOfCompanies.size() + "\n";
 		for (ValidDomainsEntity validDomainsEntity : listOfCompanies) {
 			result = result + validDomainsEntity.getCompanyName() + "\n\n" + validDomainsEntity.getCompanyColor()
@@ -24,4 +28,15 @@ public class ValidDomainsServices {
 		return result;
 	}
 
+	public boolean isOfficialDomain(String domain) {
+		if (domain == null) {
+			return false;
+		}
+		String domainName = InternetDomainName.from(domain).topPrivateDomain().topDomainUnderRegistrySuffix()
+				.toString();
+		if (validDomainsRepository.findByCompanyDomain(domainName).size() > 0) {
+			return true;
+		}
+		return false;
+	}
 }

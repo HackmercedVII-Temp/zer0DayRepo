@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.Dependency.FileDownloader;
+import com.example.demo.Dependency.SiteRequest;
 import com.example.demo.Entities.ValidDomainsEntity;
 import com.example.demo.Services.ValidDomainsServices;
 import com.google.cloud.vision.v1.AnnotateImageRequest;
@@ -37,19 +38,24 @@ public class ConfidenceController {
 			Arrays.asList("PNG8", "PNG24", "GIF", "JPEG", "BMP", "WEBP", "RAW", "ICO", "PDF", "TIFF"));
 
 	@RequestMapping(value = "/CalculateConfidence", method = RequestMethod.POST, consumes = "text/plain")
-	public String calculateConfidence(@RequestBody String Domain, @RequestBody String Image_URLS,
-			@RequestBody String Site_Text, @RequestBody String Colors) {
+	public String calculateConfidence(@RequestBody String JSON) {
 		int confidenceLevel = 100;
-		try {
 
-		} catch (IOException e) {
-			e.printStackTrace();
+		SiteRequest siteRequest = new SiteRequest(JSON);
+		siteRequest.print();
+		if (!siteRequest.isInitialized()) {
 			return "error";
 		}
+
+		if (isOfficialDomain(siteRequest.getDomain())) {
+			return "100";
+		}
+
+		return "0";
 	}
 
-	public ValidDomainsEntity findMostLikelyMatchingCompanyID() {
-
+	public boolean isOfficialDomain(String Domain) {
+		return validDomainsServices.isOfficialDomain(Domain);
 	}
 
 	public double isIntentionallyMisspelledDomain(ValidDomainsEntity validDomainsEntity, String domainName) {

@@ -11,5 +11,5 @@ import com.example.demo.Entities.ValidDomainsEntity;
 public interface ValidDomainsRepository extends CrudRepository<ValidDomainsEntity, Long> {
 	public List<ValidDomainsEntity> findByCompanyName(String companyName);
 
-	public List<ValidDomainsEntity> findByCompanyNameLike(String companyName);
+	public List<ValidDomainsEntity> findByCompanyDomain(String CompanyDomain);
 }
