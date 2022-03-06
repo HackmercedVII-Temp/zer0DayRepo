@@ -1,5 +1,5 @@
 {
-    "name": "Zer0Day Antiscam ",
+    "name": "Zer0Day Lure",
     "description": "Building an Extension for Zer0Day",
     "version": "1.0",
     "manifest_version": 3, 
@@ -7,7 +7,7 @@
     "author": "Khalid , Jason, Javier, Michael",
     "action":{
         "default_popup": "popup.html",
-        "default_title": "Zer0Day AntiScam"
+        "default_title": "Zer0Day Lure"
     },
 
     "permissions": ["storage"]
