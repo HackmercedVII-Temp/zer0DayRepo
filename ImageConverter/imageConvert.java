@@ -69,8 +69,8 @@ public class ConvertImage {
   public static void main(String[] args) {
     try {
  
-    // String ImageInput;
-      File file = new File(ImageInput);
+    
+      File file = new File("./image.gif");
       BufferedImage bi = ImageIO.read(file);
  
       ImageIO.write(bi, "png", new File("./image.png"));
