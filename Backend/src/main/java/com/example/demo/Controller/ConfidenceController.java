@@ -1,12 +1,19 @@
 package com.example.demo.Controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,7 +32,8 @@ import com.example.demo.Services.ValidDomainsServices;
 @RestController
 public class ConfidenceController {
 
-	private static double DOMAIN_SIMILARITY_PERCENTAGE = 0.65;
+	private static double DOMAIN_SIMILARITY_PERCENTAGE = 0.65, ALLOWED_MATCHING_IMAGES_PERCENTAGE = 0.1;
+	private static int ALLOWED_MATCHING_ACRONYMS = 2;
 
 	@Autowired
 	ValidDomainsServices validDomainsServices;
@@ -37,7 +45,7 @@ public class ConfidenceController {
 
 	private static Map<String, String> cachedImages = new HashMap<String, String>();
 
-//https://seattlecanineclub.net/wp-content/uploads/2018/01/AMAZON-1200x537.png
+	private JSONParser parser = new JSONParser();
 
 	@GetMapping("/DecodeImage")
 	public String decodeImage(@RequestParam(value = "image64") String image64) {
@@ -48,38 +56,42 @@ public class ConfidenceController {
 
 	@RequestMapping(value = "/CalculateConfidence", method = RequestMethod.POST, consumes = "text/plain")
 	public String calculateConfidence(@RequestBody String JSON) {
-		ValidDomainsEntity mostLikeyImpersonation = null;
-		if (allDomains == null) {
-			allDomains = validDomainsRepository.findAll();
-		}
-
-		int lowestConfidenceLevel = 100;
-
-		SiteRequest siteRequest = new SiteRequest(JSON);
-		if (!siteRequest.isInitialized()) {
-			return "error";
-		}
-		if (isOfficialDomain(siteRequest.getDomain())) {
-			return "100";
-		}
-
-		for (ValidDomainsEntity validDomainsEntity : allDomains) {
-			int confidenceLevel = 100;
-			confidenceLevel -= isIntentionallyMisspelledDomain(validDomainsEntity, siteRequest.getDomain());
-			confidenceLevel -= percentageMatchingLogo(validDomainsEntity, siteRequest.getImageURLs());
-
-			if (lowestConfidenceLevel > confidenceLevel) {
-				lowestConfidenceLevel = confidenceLevel;
-				mostLikeyImpersonation = validDomainsEntity;
+		try {
+			ValidDomainsEntity mostLikeyImpersonation = null;
+			if (allDomains == null) {
+				allDomains = validDomainsRepository.findAll();
 			}
-		}
-		if (lowestConfidenceLevel == 100) {
-			return "{\"Confidence-Level\":" + Integer.toString(lowestConfidenceLevel) + "}";
 
-		}
-		return "{\"Confidence-Level\":" + Integer.toString(lowestConfidenceLevel) + "\n\"Most-Likely-Impersonation\":\""
-				+ mostLikeyImpersonation.getCompanyName() + "\"}";
+			int lowestConfidenceLevel = 100;
 
+			SiteRequest siteRequest = new SiteRequest(JSON);
+			if (!siteRequest.isInitialized()) {
+				return "error";
+			}
+			if (isOfficialDomain(siteRequest.getDomain())) {
+				return "100";
+			}
+
+			for (ValidDomainsEntity validDomainsEntity : allDomains) {
+				int confidenceLevel = 100;
+				confidenceLevel -= isIntentionallyMisspelledDomain(validDomainsEntity, siteRequest.getDomain());
+				confidenceLevel -= percentageMatchingLogo(validDomainsEntity, siteRequest.getImageURLs());
+				confidenceLevel -= percentageMatchingText(validDomainsEntity, siteRequest.getSiteText());
+
+				if (lowestConfidenceLevel > confidenceLevel) {
+					lowestConfidenceLevel = confidenceLevel;
+					mostLikeyImpersonation = validDomainsEntity;
+				}
+			}
+			if (lowestConfidenceLevel == 100) {
+				return "{\"Confidence-Level\":" + Integer.toString(lowestConfidenceLevel) + "}";
+
+			}
+			return "{\"Confidence-Level\":" + Integer.toString(lowestConfidenceLevel)
+					+ "\n\"Most-Likely-Impersonation\":\"" + mostLikeyImpersonation.getCompanyName() + "\"}";
+		} catch (Exception e) {
+			return "{\"Confidence-Level\":100\n\"Most-Likely-Impersonation\":\"error\"}";
+		}
 	}
 
 	public boolean isOfficialDomain(String Domain) {
@@ -134,7 +146,7 @@ public class ConfidenceController {
 			}
 		}
 		int totalAmountOfImages = imageURLs.size();
-		largestMatchingCompanyLogos -= Math.max(totalAmountOfImages / 10, 1);
+		largestMatchingCompanyLogos -= Math.max(totalAmountOfImages * ALLOWED_MATCHING_IMAGES_PERCENTAGE, 1);
 		if (largestMatchingCompanyLogos <= 0) {
 			return 0;
 		} else {
@@ -144,12 +156,65 @@ public class ConfidenceController {
 	}
 
 	public int percentageMatchingText(ValidDomainsEntity validDomainsEntity, List<String> siteText) {
+		try {
+			ArrayList<String> acronymList = new ArrayList<String>();
 
+			JSONObject jsonObjectAcryonym = (JSONObject) parser.parse(validDomainsEntity.getCompanyAcronyms());
+			JSONArray acronymArray = (JSONArray) jsonObjectAcryonym.get("Acronyms");
+			if (acronymArray != null) {
+				Iterator<String> acronymIterator = acronymArray.iterator();
+				while (acronymIterator.hasNext()) {
+					acronymList.add(acronymIterator.next().toString());
+				}
+			}
+
+			JSONObject jsonObjectMispelling = (JSONObject) parser.parse(validDomainsEntity.getCompanyMisspellings());
+			JSONArray misspellingArray = (JSONArray) jsonObjectMispelling.get("misspellings");
+			if (misspellingArray != null) {
+				Iterator<String> misspellingIterator = misspellingArray.iterator();
+
+				while (misspellingIterator.hasNext()) {
+					acronymList.add(misspellingIterator.next().toString());
+				}
+			}
+
+			String totalSiteString = "";
+			for (String siteTextString : siteText) {
+				totalSiteString = totalSiteString + " " + siteTextString;
+			}
+			totalSiteString = totalSiteString.replaceAll("\\s", "").toLowerCase();
+
+			acronymList.add(validDomainsEntity.getCompanyDomain());
+			acronymList.add(validDomainsEntity.getCompanyName());
+
+			int matchingAcronyms = 0;
+			for (String acronym : acronymList) {
+				Pattern pattern = Pattern.compile(acronym);
+				Matcher matcher = pattern.matcher(totalSiteString);
+				int count = 0;
+				while (matcher.find()) {
+					count++;
+				}
+
+				matchingAcronyms += count;
+			}
+
+			matchingAcronyms -= ALLOWED_MATCHING_ACRONYMS;
+
+			return (int) Math.min(matchingAcronyms * 3.5, 50);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return 0;
+		}
 	}
 
-	public int percentageMatchingColor(ValidDomainsEntity validDomainsEntity, List<String> siteColors) {
-
-	}
+	/*
+	 * public int percentageMatchingColor(ValidDomainsEntity validDomainsEntity,
+	 * List<String> siteColors) {
+	 * 
+	 * }
+	 */
 
 	@RequestMapping("/LogoDecoder")
 	public static String logoDecoder(@RequestParam(value = "testval") String testval) throws IOException {

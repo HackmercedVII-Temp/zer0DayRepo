@@ -1,12 +1,12 @@
 package com.example.demo.Dependency;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Iterator;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
 import com.google.common.net.InternetDomainName;
 
@@ -39,7 +39,11 @@ public class SiteRequest {
 				isInitialized = false;
 				return;
 			}
-			domain = InternetDomainName.from(domain).topPrivateDomain().topDomainUnderRegistrySuffix().toString();
+			URI uri = new URI(domain);
+			String domainModified = uri.getHost();
+			domain = InternetDomainName.from(domainModified).topPrivateDomain().topDomainUnderRegistrySuffix()
+					.toString();
+			System.out.println("Domain is: " + domain);
 
 			JSONArray imgURLArray = (JSONArray) jsonObject.get("Image_URLS");
 			Iterator<String> imgUrlIterator = imgURLArray.iterator();
@@ -59,7 +63,7 @@ public class SiteRequest {
 				siteText.add(textIterator.next().toString());
 			}
 			isInitialized = true;
-		} catch (ParseException e) {
+		} catch (Exception e) {
 			isInitialized = false;
 			return;
 		}

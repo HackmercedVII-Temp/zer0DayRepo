@@ -33,4 +33,6 @@ public class ValidDomainsEntity {
 	@Column(name = "companyColor", columnDefinition = "json")
 	private String companyColor;
 
+	@Column(name = "companyMisspellings", columnDefinition = "json")
+	private String companyMisspellings;
 }
