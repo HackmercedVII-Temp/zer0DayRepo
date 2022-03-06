@@ -8,6 +8,16 @@ const app = express()
 
 const url = 'https://www.theguardian.com/uk'
 
+//app.METHOD(PATH, HANDLER)
+
+app.get('/', function (req, res){
+    res.json('This is my webscraper')
+})
+
+
+
+
+
 axios(url)
     .then(response => {
         const html = response.data
@@ -64,4 +74,18 @@ for(paragraph of paragraphs) {
   }
 
   main()
+
+
+
+
+
+
+  app.get() //get data 
+  
+  app.post() //add 
+
+  app.put() //edit
+  
+  app.delete() //delete data
+
 */
